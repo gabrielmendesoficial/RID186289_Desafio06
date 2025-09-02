@@ -106,6 +106,8 @@ DB_NAME=dncommerce
 PORT=3030
 ```
 
+> Ou caso seja necessario, altere em `database.js` 
+
 ### 5️⃣ Iniciar o servidor
 
 ```bash
