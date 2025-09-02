@@ -14,6 +14,9 @@ const vendasRoutes = require('./routes/vendas');
 // Importar configuração do banco de dados
 const database = require('./config/database');
 
+// Importar middleware de tratamento de erros
+const errorHandler = require('./middlewares/errorHandler');
+
 const app = express();
 const PORT = process.env.PORT || 3030;
 
@@ -44,7 +47,9 @@ const startServer = async () => {
       res.status(200).json({
         status: 'OK',
         message: 'DNCommerce API está funcionando',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        version: '1.0.0',
+        database: 'MySQL conectado'
       });
     });
 
@@ -53,6 +58,8 @@ const startServer = async () => {
       res.json({
         message: 'Bem-vindo à API DNCommerce',
         version: '1.0.0',
+        description: 'Sistema de gerenciamento para loja online de produtos de beleza',
+        developer: 'Gabriel Mendes - RID186289',
         endpoints: {
           produtos: '/api/produtos',
           clientes: '/api/clientes',
@@ -60,26 +67,24 @@ const startServer = async () => {
           pedidos: '/api/pedidos',
           vendas: '/api/vendas',
           health: '/api/health'
-        }
-      });
-    });
-
-    // Middleware de tratamento de erros
-    app.use((err, req, res, next) => {
-      console.error(err.stack);
-      res.status(500).json({
-        error: 'Erro interno do servidor',
-        message: err.message
+        },
+        timestamp: new Date().toISOString()
       });
     });
 
     // Middleware para rotas não encontradas
     app.use('*', (req, res) => {
       res.status(404).json({
+        success: false,
         error: 'Rota não encontrada',
-        message: `A rota ${req.originalUrl} não existe`
+        message: `A rota ${req.originalUrl} não existe`,
+        suggestion: 'Verifique a documentação da API em /',
+        timestamp: new Date().toISOString()
       });
     });
+
+    // Middleware de tratamento de erros
+    app.use(errorHandler);
 
     // Iniciar servidor
     app.listen(PORT, '0.0.0.0', () => {
@@ -92,8 +97,6 @@ const startServer = async () => {
     process.exit(1);
   }
 };
-
-// Iniciar o servidor
 startServer();
 
 module.exports = app;

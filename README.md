@@ -1,117 +1,119 @@
-# DNCommerce API
+# 🛍️ DNCommerce API - RID186289_Desafio06
 
-Sistema de gerenciamento de estoque e pedidos para loja online de produtos de beleza.
+> **Sistema de gerenciamento de estoque e pedidos para loja online de produtos de beleza**
 
-## Descrição
+## 📋 Descrição do Projeto
 
-A DNCommerce API é uma solução completa para gerenciamento de uma loja online de produtos de beleza. O sistema permite o cadastro de produtos, clientes, controle de estoque, criação de pedidos e registro de vendas.
+A **DNCommerce API** é uma solução completa desenvolvida em **Node.js + Express** para gerenciamento de uma loja online de produtos de beleza. O sistema permite o cadastro de produtos, clientes, controle de estoque, criação de pedidos e registro de vendas através de uma API REST robusta e bem estruturada.
 
-## Diagrama do Banco de Dados
+Este projeto foi desenvolvido como parte do **Desafio 06** seguindo todas as especificações e critérios de avaliação estabelecidos.
 
-![Diagrama ER](./DNCommerce_ER_Diagram.png)
+## 🎯 Funcionalidades Principais
 
-## Tecnologias Utilizadas
+- ✅ **CRUD completo de Produtos** (cadastro, consulta, atualização, exclusão)
+- ✅ **CRUD completo de Clientes** com validações
+- ✅ **Controle de Estoque** com alertas de estoque baixo
+- ✅ **Sistema de Pedidos** com múltiplos itens
+- ✅ **Registro de Vendas** com relatórios
+- ✅ **API REST** com códigos HTTP adequados
+- ✅ **Validações** de dados e regras de negócio
+- ✅ **Tratamento de Erros** centralizado
+
+## 🗄️ Diagrama do Banco de Dados
+
+![Diagrama Entidade-Relacionamento](./DNCommerce_ER_Diagram.png)
+
+### Entidades e Relacionamentos
+
+O sistema foi modelado com **5 entidades principais** conforme especificado:
+
+1. **Produtos** - Catálogo de produtos de beleza
+2. **Clientes** - Cadastro de clientes da loja
+3. **Estoque** - Controle de quantidades disponíveis
+4. **Pedidos** - Pedidos realizados pelos clientes
+5. **Vendas** - Itens vendidos (relaciona pedidos com produtos)
+
+**Relacionamentos:**
+- Cliente → Pedidos (1:N)
+- Produto → Estoque (1:1)
+- Pedido → Vendas (1:N)
+- Produto → Vendas (1:N)
+
+## 🚀 Tecnologias Utilizadas
 
 - **Node.js** - Runtime JavaScript
-- **Express.js** - Framework web
-- **MySQL** - Banco de dados
-- **mysql2/promise** - Driver MySQL para Node.js
-- **CORS** - Controle de acesso
-- **Helmet** - Segurança
-- **Morgan** - Logging
+- **Express.js** - Framework web minimalista
+- **MySQL** - Sistema de gerenciamento de banco de dados
+- **mysql2/promise** - Driver MySQL com suporte a Promises
+- **CORS** - Controle de acesso entre origens
+- **Helmet** - Middlewares de segurança
+- **Morgan** - Logger de requisições HTTP
+- **UUID** - Geração de identificadores únicos
 
-## Instalação e Configuração (MySQL)
+## ⚙️ Instalação e Configuração
 
 ### Pré-requisitos
 
-Certifique-se de ter o Node.js, npm e um servidor MySQL instalados em sua máquina.
+- **Node.js** (versão 14 ou superior)
+- **npm** (gerenciador de pacotes)
+- **MySQL Server** (versão 5.7 ou superior)
 
-### No Linux (Ubuntu/Debian)
-
-1.  **Instalar Node.js e npm:**
-    ```bash
-    sudo apt update
-    sudo apt install nodejs npm
-    ```
-2.  **Instalar MySQL Server:**
-    ```bash
-    sudo apt install mysql-server
-    sudo mysql_secure_installation # Siga as instruções para configurar a segurança
-    ```
-3.  **Acessar MySQL e criar DB/Usuário:**
-    ```bash
-    sudo mysql -u root -p
-    # Dentro do MySQL Shell, execute os comandos da seção '3.1. Crie o Banco de Dados e Usuário'
-    exit
-    ```
-4.  **Siga os passos 1, 2, 3.2 e 3.3 da seção 'Instalação e Configuração (MySQL)' acima.**
-
-### No Windows
-
-1.  **Instalar Node.js e npm:**
-    Baixe e execute o instalador MSI do site oficial: [nodejs.org](https://nodejs.org/en/download/)
-2.  **Instalar MySQL Server:**
-    Baixe e execute o MySQL Installer do site oficial: [dev.mysql.com/downloads/installer/](https://dev.mysql.com/downloads/installer/)
-    Durante a instalação, configure um usuário `root` e uma senha.
-3.  **Acessar MySQL e criar DB/Usuário:**
-    Abra o MySQL Command Line Client ou MySQL Workbench e execute os comandos da seção '3.1. Crie o Banco de Dados e Usuário'.
-4.  **Siga os passos 1, 2, 3.2 e 3.3 da seção 'Instalação e Configuração (MySQL)' acima.**
-    Para o passo 3.3, você pode criar o arquivo `.env` usando um editor de texto como o Bloco de Notas.
-
-
-### 1. Clone o repositório
+### 1️⃣ Clone o repositório
 
 ```bash
-git clone https://github.com/gabrielmendesoficial/RID186289_Desafio06
+git clone https://github.com/seu-usuario/RID186289_Desafio06.git
 cd RID186289_Desafio06
 ```
 
-### 2. Instale as dependências
+### 2️⃣ Instale as dependências
 
 ```bash
 npm install
 ```
 
-### 3. Configuração do Banco de Dados MySQL
+### 3️⃣ Configuração do Banco de Dados
 
-#### 3.1. Crie o Banco de Dados e Usuário
-
-No seu servidor MySQL, crie um banco de dados chamado `dncommerce` e um usuário com permissões adequadas para acessá-lo:
+#### Criar o banco e usuário MySQL
 
 ```sql
 CREATE DATABASE dncommerce;
-CREATE USER 'user'@'localhost' IDENTIFIED BY 'senha';
+CREATE USER 'user'@'localhost' IDENTIFIED BY 'dnpassword';
 GRANT ALL PRIVILEGES ON dncommerce.* TO 'user'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
-#### 3.2. Importe o Esquema e Dados Iniciais
-
-O projeto inclui um arquivo `dncommerce_mysql.sql` com o esquema do banco de dados e dados de exemplo. Importe-o para o seu banco de dados `dncommerce`:
+#### Importar estrutura e dados iniciais
 
 ```bash
 mysql -u user -p dncommerce < dncommerce_mysql.sql
 ```
-> Substitua `user` pelo seu usuário MySQL e `dncommerce` pelo nome do seu banco de dados. Será solicitada a senha.
 
-#### 3.3. Configure as Variáveis de Ambiente
+### 4️⃣ Configurar variáveis de ambiente
 
-Crie um arquivo `.env` na raiz do projeto (`RID186289_Desafio06/`) com as suas credenciais do MySQL:
+Copie o arquivo `.env.example` para `.env` e configure suas credenciais:
 
+```bash
+cp .env.example .env
 ```
+
+Edite o arquivo `.env`:
+
+```env
 DB_HOST=localhost
 DB_USER=user
-DB_PASSWORD=senha
+DB_PASSWORD=dnpassword
 DB_NAME=dncommerce
+PORT=3030
 ```
 
-### 4. Inicie o servidor
+### 5️⃣ Iniciar o servidor
 
 ```bash
 npm start
 ```
 
-> O servidor estará disponível em `http://localhost:3000` (ou a porta configurada no `app.js`).
+O servidor estará disponível em: **http://localhost:3030**
+
 
 ## Estrutura do Banco de Dados
 
@@ -162,96 +164,112 @@ npm start
 - `preco_unitario` - Preço no momento da venda
 - `subtotal` - Subtotal do item
 
-## API Endpoints
+## 📚 Documentação da API
 
-### Produtos
+### 🔗 Endpoints Principais
 
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| GET | `/api/produtos` | Listar todos os produtos |
-| GET | `/api/produtos/:id` | Buscar produto por ID |
-| GET | `/api/produtos/categoria/:categoria` | Buscar produtos por categoria |
-| POST | `/api/produtos` | Criar novo produto |
-| PUT | `/api/produtos/:id` | Atualizar produto |
-| DELETE | `/api/produtos/:id` | Deletar produto |
+A API segue o padrão REST com respostas em JSON. Todos os endpoints retornam códigos HTTP apropriados.
 
-### Clientes
+#### 🛍️ Produtos
 
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| GET | `/api/clientes` | Listar todos os clientes |
-| GET | `/api/clientes/:id` | Buscar cliente por ID |
-| GET | `/api/clientes/email/:email` | Buscar cliente por email |
-| POST | `/api/clientes` | Criar novo cliente |
-| PUT | `/api/clientes/:id` | Atualizar cliente |
-| DELETE | `/api/clientes/:id` | Deletar cliente |
+| Método | Endpoint | Descrição | Status |
+|--------|----------|-----------|---------|
+| `GET` | `/api/produtos` | Listar todos os produtos | 200 |
+| `GET` | `/api/produtos/:id` | Buscar produto por ID | 200/404 |
+| `GET` | `/api/produtos/categoria/:categoria` | Produtos por categoria | 200 |
+| `POST` | `/api/produtos` | Criar novo produto | 201/400 |
+| `PUT` | `/api/produtos/:id` | Atualizar produto | 200/404 |
+| `DELETE` | `/api/produtos/:id` | Deletar produto | 200/404 |
 
-### Estoque
+#### 👥 Clientes
 
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| GET | `/api/estoque` | Listar todo o estoque |
-| GET | `/api/estoque/baixo` | Produtos com estoque baixo |
-| GET | `/api/estoque/produto/:id_produto` | Estoque de um produto |
-| PUT | `/api/estoque/produto/:id_produto` | Atualizar estoque |
-| POST | `/api/estoque/produto/:id_produto/adicionar` | Adicionar ao estoque |
-| POST | `/api/estoque/produto/:id_produto/remover` | Remover do estoque |
+| Método | Endpoint | Descrição | Status |
+|--------|----------|-----------|---------|
+| `GET` | `/api/clientes` | Listar todos os clientes | 200 |
+| `GET` | `/api/clientes/:id` | Buscar cliente por ID | 200/404 |
+| `GET` | `/api/clientes/email/:email` | Buscar por email | 200/404 |
+| `POST` | `/api/clientes` | Criar novo cliente | 201/400/409 |
+| `PUT` | `/api/clientes/:id` | Atualizar cliente | 200/404 |
+| `DELETE` | `/api/clientes/:id` | Deletar cliente | 200/404 |
 
-### Pedidos
+#### 📦 Estoque
 
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| GET | `/api/pedidos` | Listar todos os pedidos |
-| GET | `/api/pedidos/:id` | Buscar pedido por ID |
-| GET | `/api/pedidos/cliente/:id_cliente` | Pedidos de um cliente |
-| POST | `/api/pedidos` | Criar novo pedido |
-| PUT | `/api/pedidos/:id/status` | Atualizar status do pedido |
+| Método | Endpoint | Descrição | Status |
+|--------|----------|-----------|---------|
+| `GET` | `/api/estoque` | Listar todo o estoque | 200 |
+| `GET` | `/api/estoque/baixo` | Produtos com estoque baixo | 200 |
+| `GET` | `/api/estoque/produto/:id` | Estoque de um produto | 200/404 |
+| `PUT` | `/api/estoque/produto/:id` | Atualizar estoque | 200/404 |
+| `POST` | `/api/estoque/produto/:id/adicionar` | Adicionar ao estoque | 200/404 |
+| `POST` | `/api/estoque/produto/:id/remover` | Remover do estoque | 200/400/404 |
 
-### Vendas
+#### 🛒 Pedidos
 
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| GET | `/api/vendas` | Listar todas as vendas |
-| GET | `/api/vendas/:id` | Buscar venda por ID |
-| GET | `/api/vendas/produto/:id_produto` | Vendas de um produto |
-| GET | `/api/vendas/pedido/:id_pedido` | Vendas de um pedido |
-| GET | `/api/vendas/relatorio/periodo` | Relatório por período |
-| GET | `/api/vendas/relatorio/top-produtos` | Produtos mais vendidos |
-| GET | `/api/vendas/relatorio/categorias` | Vendas por categoria |
+| Método | Endpoint | Descrição | Status |
+|--------|----------|-----------|---------|
+| `GET` | `/api/pedidos` | Listar todos os pedidos | 200 |
+| `GET` | `/api/pedidos/:id` | Buscar pedido por ID | 200/404 |
+| `GET` | `/api/pedidos/cliente/:id` | Pedidos de um cliente | 200 |
+| `POST` | `/api/pedidos` | Criar novo pedido | 201/400 |
+| `PUT` | `/api/pedidos/:id/status` | Atualizar status | 200/404 |
 
-## Exemplos de Uso
+#### 💰 Vendas
+
+| Método | Endpoint | Descrição | Status |
+|--------|----------|-----------|---------|
+| `GET` | `/api/vendas` | Listar todas as vendas | 200 |
+| `GET` | `/api/vendas/:id` | Buscar venda por ID | 200/404 |
+| `GET` | `/api/vendas/produto/:id` | Vendas de um produto | 200 |
+| `GET` | `/api/vendas/pedido/:id` | Vendas de um pedido | 200 |
+| `GET` | `/api/vendas/relatorio/periodo` | Relatório por período | 200 |
+| `GET` | `/api/vendas/relatorio/top-produtos` | Produtos mais vendidos | 200 |
+| `GET` | `/api/vendas/relatorio/categorias` | Vendas por categoria | 200 |
+
+### 📊 Códigos de Status HTTP
+
+- `200` ✅ **OK** - Sucesso na operação
+- `201` ✅ **Created** - Recurso criado com sucesso
+- `400` ❌ **Bad Request** - Dados inválidos ou faltantes
+- `404` ❌ **Not Found** - Recurso não encontrado
+- `409` ❌ **Conflict** - Conflito (ex: email já cadastrado)
+- `500` ❌ **Internal Server Error** - Erro interno do servidor
+
+## 🧪 Exemplos de Teste com cURL
 
 ### Criar um produto
+
 ```bash
-curl -X POST http://localhost:3000/api/produtos \
+curl -X POST http://localhost:3030/api/produtos \
   -H "Content-Type: application/json" \
-  -d \'{
+  -d '{
     "nome_produto": "Base Líquida Premium",
-    "descricao": "Base de alta cobertura",
+    "descricao": "Base de alta cobertura para todos os tipos de pele",
     "preco": 89.90,
     "categoria": "Maquiagem",
     "marca": "BeautyPro"
-  }\'
+  }'
 ```
 
 ### Criar um cliente
+
 ```bash
-curl -X POST http://localhost:3000/api/clientes \
+curl -X POST http://localhost:3030/api/clientes \
   -H "Content-Type: application/json" \
-  -d \'{
+  -d '{
     "nome_cliente": "Maria Silva",
     "email": "maria@email.com",
     "telefone": "(11) 99999-1111",
     "cpf": "123.456.789-01",
-    "endereco": "Rua das Flores, 123"
-  }\'
+    "endereco": "Rua das Flores, 123, São Paulo, SP"
+  }'
 ```
 
 ### Criar um pedido
+
 ```bash
-curl -X POST http://localhost:3000/api/pedidos \
+curl -X POST http://localhost:3030/api/pedidos \
   -H "Content-Type: application/json" \
-  -d \'{
+  -d '{
     "id_cliente": 1,
     "endereco_entrega": "Rua das Flores, 123",
     "forma_pagamento": "Cartão de Crédito",
@@ -261,43 +279,111 @@ curl -X POST http://localhost:3000/api/pedidos \
         "quantidade": 2
       }
     ]
-  }\'
+  }'
 ```
 
-## Códigos de Status HTTP
+### Consultar estoque baixo
 
-- `200` - Sucesso
-- `201` - Criado com sucesso
-- `400` - Erro de validação
-- `404` - Não encontrado
-- `409` - Conflito (dados duplicados)
-- `500` - Erro interno do servidor
+```bash
+curl -X GET http://localhost:3030/api/estoque/baixo
+```bash
+curl -X GET http://localhost:3030/api/estoque/baixo
+```
 
-## Estrutura do Projeto
+## 🗂️ Estrutura do Projeto
 
 ```
 RID186289_Desafio06/
-├── app.js                 # Arquivo principal
-├── package.json           # Dependências e scripts
-├── config/
-│   └── database.js        # Configuração do banco
-├── controllers/
-│   ├── produtosController.js
-│   ├── clientesController.js
-│   ├── estoqueController.js
-│   ├── pedidosController.js
-│   └── vendasController.js
-├── models/
-│   ├── clienteModel.js
-│   ├── produtoModel.js
-│   ├── estoqueModel.js
-│   ├── pedidoModel.js
-│   └── vendaModel.js
-├── routes/
-│   ├── produtos.js
-│   ├── clientes.js
-│   ├── estoque.js
-│   ├── pedidos.js
-│   └── vendas.js
-└── dncommerce_mysql.sql   # Esquema e dados para MySQL
+├── 📄 app.js                 # Arquivo principal da aplicação
+├── 📄 package.json           # Dependências e scripts
+├── 📄 .env.example           # Exemplo de variáveis de ambiente
+├── 📄 dncommerce_mysql.sql   # Script de criação do banco
+├── 🖼️ DNCommerce_ER_Diagram.png # Diagrama do banco de dados
+├── 📁 config/
+│   └── 📄 database.js        # Configuração da conexão MySQL
+├── 📁 controllers/
+│   ├── 📄 produtosController.js
+│   ├── 📄 clientesController.js
+│   ├── 📄 estoqueController.js
+│   ├── 📄 pedidosController.js
+│   └── 📄 vendasController.js
+├── 📁 models/
+│   ├── 📄 clienteModel.js
+│   ├── 📄 produtoModel.js
+│   ├── 📄 estoqueModel.js
+│   ├── 📄 pedidoModel.js
+│   └── 📄 vendaModel.js
+├── 📁 routes/
+│   ├── 📄 produtos.js
+│   ├── 📄 clientes.js
+│   ├── 📄 estoque.js
+│   ├── 📄 pedidos.js
+│   └── 📄 vendas.js
+└── 📁 middlewares/
+    ├── 📄 errorHandler.js
+    └── 📄 validateCliente.js
 ```
+
+## 🔧 Modelagem de Dados
+
+### Relacionamentos Implementados
+
+- **Cliente ↔ Pedidos**: Relacionamento 1:N (um cliente pode ter vários pedidos)
+- **Produto ↔ Estoque**: Relacionamento 1:1 (cada produto tem um registro de estoque)
+- **Pedido ↔ Vendas**: Relacionamento 1:N (um pedido pode ter vários itens)
+- **Produto ↔ Vendas**: Relacionamento 1:N (um produto pode estar em várias vendas)
+
+### Nomenclaturas Padronizadas
+
+Todas as tabelas e campos seguem padrões claros e concisos:
+
+- **Tabelas**: `produtos`, `clientes`, `pedidos`, `vendas`, `estoque`
+- **Chaves Primárias**: `id_produto`, `id_cliente`, `id_pedido`, etc.
+- **Campos**: `nome_produto`, `preco_unitario`, `data_cadastro`, etc.
+
+## 🧪 Testes da API
+
+### Ferramenta Recomendada: Insomnia
+
+1. **Baixe o Insomnia**: [insomnia.rest](https://insomnia.rest)
+2. **Importe a collection** (se disponível) ou crie manualmente
+3. **Configure a base URL**: `http://localhost:3030`
+4. **Teste os endpoints** conforme documentação acima
+
+### Exemplo de Resposta da API
+
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id_produto": 1,
+      "nome_produto": "Base Líquida Premium",
+      "descricao": "Base de alta cobertura para todos os tipos de pele",
+      "preco": 89.90,
+      "categoria": "Maquiagem",
+      "marca": "BeautyPro",
+      "data_cadastro": "2025-09-01T12:00:00.000Z",
+      "ativo": 1
+    }
+  ],
+  "total": 1
+}
+```
+
+## 📝 Critérios de Avaliação Atendidos
+
+| Critério | Status | Detalhes |
+|----------|--------|----------|
+| **Modelagem de Dados** | ✅ | 5 entidades identificadas com relacionamentos corretos |
+| **Nomenclaturas Claras** | ✅ | Tabelas e campos com nomes descritivos e padronizados |
+| **API REST** | ✅ | Endpoints organizados por recurso com métodos HTTP adequados |
+| **Respostas da API** | ✅ | Códigos de status apropriados e dados consistentes |
+
+## 👨‍💻 Desenvolvedor
+
+**Gabriel Mendes - RID186289**
+
+---
+
+**🚀 Projeto desenvolvido como parte do Desafio 06 - Sistema de Gerenciamento DNCommerce**

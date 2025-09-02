@@ -1,65 +1,75 @@
 const Produto = require("../models/produtoModel");
 
-// Listar todos os produtos
-const listarProdutos = async (req, res) => {
+/**
+ * Controller para gerenciamento de produtos
+ * Contém todas as operações CRUD e busca por categoria
+ */
+
+/**
+ * Lista todos os produtos ativos
+ * @route GET /api/produtos
+ */
+const listarProdutos = async (req, res, next) => {
   try {
     const rows = await Produto.listarProdutos();
-    res.json({
+    
+    res.status(200).json({
       success: true,
+      message: 'Produtos listados com sucesso',
       data: rows,
       total: rows.length,
+      timestamp: new Date().toISOString()
     });
   } catch (err) {
-    res.status(500).json({
-      error: "Erro ao buscar produtos",
-      message: err.message,
-    });
+    next(err);
   }
 };
 
-// Buscar produto por ID
-const buscarProdutoPorId = async (req, res) => {
-  const { id } = req.params;
+/**
+ * Busca um produto específico por ID
+ * @route GET /api/produtos/:id
+ */
+const buscarProdutoPorId = async (req, res, next) => {
   try {
-    const row = await Produto.buscarProdutoPorId(id);
-    if (!row) {
+    const { id } = req.params;
+    const produto = await Produto.buscarProdutoPorId(id);
+    
+    if (!produto) {
       return res.status(404).json({
+        success: false,
         error: "Produto não encontrado",
+        message: `Nenhum produto encontrado com ID ${id}`,
+        timestamp: new Date().toISOString()
       });
     }
-    res.json({
+    
+    res.status(200).json({
       success: true,
-      data: row,
+      message: 'Produto encontrado com sucesso',
+      data: produto,
+      timestamp: new Date().toISOString()
     });
   } catch (err) {
-    res.status(500).json({
-      error: "Erro ao buscar produto",
-      message: err.message,
-    });
+    next(err);
   }
 };
 
-// Criar novo produto
-const criarProduto = async (req, res) => {
-  const { nome_produto, descricao, preco, categoria, marca } = req.body;
-
-  // Validações básicas
-  if (!nome_produto || !preco) {
-    return res.status(400).json({
-      error: "Dados obrigatórios não fornecidos",
-      message: "Nome do produto e preço são obrigatórios",
-    });
-  }
-
-  if (preco <= 0) {
-    return res.status(400).json({
-      error: "Preço inválido",
-      message: "O preço deve ser maior que zero",
-    });
-  }
-
+/**
+ * Cria um novo produto
+ * @route POST /api/produtos
+ */
+const criarProduto = async (req, res, next) => {
   try {
-    const result = await Produto.criarProduto({ nome_produto, descricao, preco, categoria, marca });
+    const { nome_produto, descricao, preco, categoria, marca } = req.body;
+
+    const result = await Produto.criarProduto({ 
+      nome_produto, 
+      descricao, 
+      preco, 
+      categoria, 
+      marca 
+    });
+    
     res.status(201).json({
       success: true,
       message: "Produto criado com sucesso",
@@ -70,86 +80,131 @@ const criarProduto = async (req, res) => {
         preco,
         categoria,
         marca,
+        ativo: 1,
+        data_cadastro: new Date().toISOString()
       },
+      timestamp: new Date().toISOString()
     });
   } catch (err) {
-    res.status(500).json({
-      error: "Erro ao criar produto",
-      message: err.message,
-    });
+    // Tratamento específico para erro de nome duplicado
+    if (err.code === 'ER_DUP_ENTRY') {
+      return res.status(409).json({
+        success: false,
+        error: "Produto já existe",
+        message: "Já existe um produto com este nome",
+        timestamp: new Date().toISOString()
+      });
+    }
+    next(err);
   }
 };
 
-// Atualizar produto
-const atualizarProduto = async (req, res) => {
-  const { id } = req.params;
-  const { nome_produto, descricao, preco, categoria, marca, ativo } = req.body;
-
-  // Validações básicas
-  if (preco && preco <= 0) {
-    return res.status(400).json({
-      error: "Preço inválido",
-      message: "O preço deve ser maior que zero",
-    });
-  }
-
+/**
+ * Atualiza um produto existente
+ * @route PUT /api/produtos/:id
+ */
+const atualizarProduto = async (req, res, next) => {
   try {
-    const result = await Produto.atualizarProduto(id, { nome_produto, descricao, preco, categoria, marca, ativo });
-    if (result.affectedRows === 0) {
+    const { id } = req.params;
+    const { nome_produto, descricao, preco, categoria, marca, ativo } = req.body;
+
+    // Verificar se o produto existe
+    const produtoExistente = await Produto.buscarProdutoPorId(id);
+    if (!produtoExistente) {
       return res.status(404).json({
+        success: false,
         error: "Produto não encontrado",
+        message: `Nenhum produto encontrado com ID ${id}`,
+        timestamp: new Date().toISOString()
       });
     }
-    res.json({
+
+    const result = await Produto.atualizarProduto(id, { 
+      nome_produto, 
+      descricao, 
+      preco, 
+      categoria, 
+      marca, 
+      ativo 
+    });
+    
+    res.status(200).json({
       success: true,
       message: "Produto atualizado com sucesso",
+      data: {
+        id_produto: id,
+        ...req.body
+      },
+      timestamp: new Date().toISOString()
     });
   } catch (err) {
-    res.status(500).json({
-      error: "Erro ao atualizar produto",
-      message: err.message,
-    });
-  }
-};
-
-// Deletar produto (soft delete)
-const deletarProduto = async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await Produto.deletarProduto(id);
-    if (result.affectedRows === 0) {
-      return res.status(404).json({
-        error: "Produto não encontrado",
+    if (err.code === 'ER_DUP_ENTRY') {
+      return res.status(409).json({
+        success: false,
+        error: "Conflito de dados",
+        message: "Já existe um produto com este nome",
+        timestamp: new Date().toISOString()
       });
     }
-    res.json({
-      success: true,
-      message: "Produto removido com sucesso",
-    });
-  } catch (err) {
-    res.status(500).json({
-      error: "Erro ao deletar produto",
-      message: err.message,
-    });
+    next(err);
   }
 };
 
-// Buscar produtos por categoria
-const buscarPorCategoria = async (req, res) => {
-  const { categoria } = req.params;
+/**
+ * Remove um produto (soft delete)
+ * @route DELETE /api/produtos/:id
+ */
+const deletarProduto = async (req, res, next) => {
   try {
-    const rows = await Produto.buscarPorCategoria(categoria);
-    res.json({
+    const { id } = req.params;
+    
+    // Verificar se o produto existe
+    const produtoExistente = await Produto.buscarProdutoPorId(id);
+    if (!produtoExistente) {
+      return res.status(404).json({
+        success: false,
+        error: "Produto não encontrado",
+        message: `Nenhum produto encontrado com ID ${id}`,
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    await Produto.deletarProduto(id);
+    
+    res.status(200).json({
       success: true,
+      message: "Produto removido com sucesso",
+      note: "Produto desativado (soft delete) - não foi removido fisicamente",
+      data: {
+        id_produto: id,
+        ativo: 0
+      },
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+/**
+ * Busca produtos por categoria
+ * @route GET /api/produtos/categoria/:categoria
+ */
+const buscarPorCategoria = async (req, res, next) => {
+  try {
+    const { categoria } = req.params;
+    const rows = await Produto.buscarPorCategoria(categoria);
+    
+    res.status(200).json({
+      success: true,
+      message: `Produtos da categoria '${categoria}' listados com sucesso`,
       data: rows,
       total: rows.length,
       categoria,
+      timestamp: new Date().toISOString()
     });
   } catch (err) {
-    res.status(500).json({
-      error: "Erro ao buscar produtos por categoria",
-      message: err.message,
-    });
+    next(err);
   }
 };
 

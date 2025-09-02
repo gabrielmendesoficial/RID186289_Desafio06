@@ -1,6 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const produtosController = require('../controllers/produtosController');
+const { validateProduto, validateProdutoUpdate, validateId } = require('../middlewares/validateProduto');
+
+/**
+ * Rotas para gerenciamento de produtos
+ * Todas as rotas incluem validações apropriadas
+ */
 
 // GET /api/produtos - Listar todos os produtos
 router.get('/', produtosController.listarProdutos);
@@ -9,16 +15,16 @@ router.get('/', produtosController.listarProdutos);
 router.get('/categoria/:categoria', produtosController.buscarPorCategoria);
 
 // GET /api/produtos/:id - Buscar produto por ID
-router.get('/:id', produtosController.buscarProdutoPorId);
+router.get('/:id', validateId, produtosController.buscarProdutoPorId);
 
 // POST /api/produtos - Criar novo produto
-router.post('/', produtosController.criarProduto);
+router.post('/', validateProduto, produtosController.criarProduto);
 
 // PUT /api/produtos/:id - Atualizar produto
-router.put('/:id', produtosController.atualizarProduto);
+router.put('/:id', validateId, validateProdutoUpdate, produtosController.atualizarProduto);
 
 // DELETE /api/produtos/:id - Deletar produto (soft delete)
-router.delete('/:id', produtosController.deletarProduto);
+router.delete('/:id', validateId, produtosController.deletarProduto);
 
 module.exports = router;
 

@@ -1,16 +1,16 @@
 {
-  "name": "dncommerce-api",
+  "name": "rid186289-desafio06",
   "version": "1.0.0",
+  "description": "Sistema de gerenciamento de estoque e pedidos para loja online DNCommerce - API REST para produtos de beleza",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
     "dev": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["api", "rest", "ecommerce", "beauty", "nodejs", "express", "mysql"],
+  "author": "Gabriel Mendes - RID186289",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.18.2",
